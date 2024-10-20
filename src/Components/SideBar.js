@@ -8,7 +8,7 @@ import {
   DocumentTextIcon,
   EyeIcon,
   UserPlusIcon,
-} from '@heroicons/react/24/solid'; // Import Heroicons for each section
+} from '@heroicons/react/24/solid';
 
 const SideBar = () => {
   const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
