@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { MagnifyingGlassIcon, TrashIcon } from '@heroicons/react/24/solid'; // Importing icons
+import { MagnifyingGlassIcon, TrashIcon } from '@heroicons/react/24/solid'; 
 
 const ViewInvoice = () => {
   const [invoices, setInvoices] = useState([]);
