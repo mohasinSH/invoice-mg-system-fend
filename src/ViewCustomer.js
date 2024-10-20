@@ -12,7 +12,7 @@ const ViewCustomer = () => {
   useEffect(() => {
     axios.get('https://invoice-mg-system-bkend-890.onrender.com/customer')
       .then(response => {
-        setCustomers(response.data); // Assuming response contains an array of customer objects
+        setCustomers(response.data); 
       })
       .catch(error => {
         console.error('There was an error fetching the customers!', error);
