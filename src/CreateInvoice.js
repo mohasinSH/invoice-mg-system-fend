@@ -11,7 +11,7 @@ const CreateInvoice = () => {
   const [companies, setCompanies] = useState([]);
   const [customers, setCustomers] = useState([]);
   
-  // Fetch companies and customers on component mount
+ 
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
@@ -39,7 +39,7 @@ const CreateInvoice = () => {
     const updatedItems = [...items];
     updatedItems[index][name] = value;
 
-    // Calculate total for the current item
+    
     if (name === 'units' || name === 'price') {
       const units = parseFloat(updatedItems[index].units) || 0;
       const price = parseFloat(updatedItems[index].price) || 0;
@@ -78,12 +78,12 @@ const CreateInvoice = () => {
         });
       }
 
-      // Show success toast
+     
       toast.success('Company details submitted successfully!', {
         position: 'top-right'
       });
 
-      // Reset form fields after submission
+     
       setCompanyName('');
       setCustomerName('');
       setGstinNo('');
@@ -110,7 +110,7 @@ const CreateInvoice = () => {
     }
   };
 
-  // Filter customers based on selected company
+ 
   const filteredCustomers = customers.filter(customer => customer.company_name === companyName);
 
   return (

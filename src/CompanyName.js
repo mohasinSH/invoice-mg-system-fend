@@ -20,19 +20,19 @@ const CompanyName = () => {
     fetchCompanies();
   }, []);
 
-  // Handle search input change
+
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  // Handle company deletion
+ 
   const handleDelete = async (id) => {
     try {
-      // Send DELETE request to the server
+    
       const response = await axios.delete(`https://invoice-mg-system-bkend-890.onrender.com/company/${id}`);
       
       if (response.status === 200) {
-        // Remove the deleted company from the state
+       
         const updatedCompanies = companies.filter(company => company.company_id !== id);
         setCompanies(updatedCompanies);
         alert(response.data.message);
@@ -43,19 +43,19 @@ const CompanyName = () => {
     }
   };
 
-  // Handle edit action (Pay action)
+
   const handleEdit = (id) => {
     alert(`Pay for company with ID: ${id}`);
   };
 
-  // Filtered companies based on search term
+
   const filteredCompanies = companies.filter(company =>
     company.company_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="p-6">
-      {/* Search filter input */}
+  
       <div className="mb-4 flex items-center">
         <MagnifyingGlassIcon className="h-5 w-5 text-gray-400 mr-2" />
         <input
@@ -67,7 +67,6 @@ const CompanyName = () => {
         />
       </div>
 
-      {/* Companies list */}
       <table className="w-full table-auto bg-white shadow-md rounded-lg border border-gray-300">
         <thead>
           <tr className="bg-gray-200 text-left">

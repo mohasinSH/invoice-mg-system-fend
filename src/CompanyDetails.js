@@ -70,7 +70,7 @@ const CompanyDetails = () => {
       
     });
 
-    // Clear form after submission
+   
     setCompanyName('');
     setAddress('');
     setMobileNo('');
@@ -93,7 +93,7 @@ const CompanyDetails = () => {
       <div className="bg-white p-8 rounded shadow-md w-1/2">
         <h2 className="text-2xl font-bold mb-6 text-center">Company Details</h2>
         <form onSubmit={handleSubmit}>
-          {/* Company Name */}
+       
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="company_name">
               Company Name
@@ -108,7 +108,7 @@ const CompanyDetails = () => {
             />
           </div>
 
-          {/* Address */}
+      
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="address">
               Address
@@ -123,7 +123,7 @@ const CompanyDetails = () => {
             />
           </div>
 
-          {/* Mobile No and Alternate Mobile No */}
+       
           <div className="mb-4 flex flex-wrap">
             <div className="w-1/2 pr-2">
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="mobile_no">
@@ -152,7 +152,6 @@ const CompanyDetails = () => {
             </div>
           </div>
 
-          {/* Landline No */}
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="landline_no">
               Landline No
@@ -166,7 +165,6 @@ const CompanyDetails = () => {
             />
           </div>
 
-          {/* Email and Website */}
           <div className="mb-4 flex flex-wrap">
             <div className="w-1/2 pr-2">
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
@@ -195,7 +193,7 @@ const CompanyDetails = () => {
             </div>
           </div>
 
-          {/* Customer Prefix and Invoice Prefix */}
+         
           <div className="mb-4 flex flex-wrap">
             <div className="w-1/2 pr-2">
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="customer_prefix">
@@ -223,7 +221,7 @@ const CompanyDetails = () => {
             </div>
           </div>
 
-          {/* GSTIN No */}
+     
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="gstin_no">
               GSTIN No
@@ -237,7 +235,7 @@ const CompanyDetails = () => {
             />
           </div>
 
-          {/* Bank Details */}
+       
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="bank_account_no">
               Bank Account No
@@ -275,7 +273,7 @@ const CompanyDetails = () => {
             />
           </div>
 
-          {/* PAN No */}
+       
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="panno">
               PAN No
@@ -289,7 +287,7 @@ const CompanyDetails = () => {
             />
           </div>
 
-          {/* Logo */}
+    
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="logo">
               Logo

@@ -11,11 +11,11 @@ const Login = () => {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    // Validate credentials
+   
     if (username === 'root' && password === 'admin') {
-      navigate('/home'); // Navigate to the /home route
+      navigate('/home'); 
     } else {
-      toast.error('Invalid credentials!'); // Show error message
+      toast.error('Invalid credentials!'); 
     }
   };
 

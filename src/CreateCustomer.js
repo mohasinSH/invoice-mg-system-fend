@@ -8,7 +8,7 @@ const CreateCustomer = () => {
   const [customerName, setCustomerName] = useState('');
   const [companies, setCompanies] = useState([]);
 
-  // Fetch the list of companies from the API
+  
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
@@ -34,17 +34,16 @@ const CreateCustomer = () => {
       const response = await axios.post('https://invoice-mg-system-bkend-890.onrender.com/customer', customerData);
       console.log('Customer created:', response.data);
 
-      // Show success toast
+     
       toast.success('Customer created successfully!', {
         position: 'top-right'
       });
 
-      // Clear the form after submission
       setCompanyName('');
       setCustomerName('');
     } catch (error) {
       console.error('Error creating customer:', error);
-      // Show error toast
+     
       toast.error('Error creating customer. Please try again.', {
         position: 'top-right'
       });

@@ -25,7 +25,6 @@ const EditCompanyDetails = () => {
     bankTotal:''
   });
 
-  // Fetch all companies from the API
   useEffect(() => {
     axios.get('https://invoice-mg-system-bkend-890.onrender.com/company')
       .then((response) => {
@@ -37,7 +36,7 @@ const EditCompanyDetails = () => {
       });
   }, []);
 
-  // Handle the company selection from dropdown
+
   const handleCompanySelect = (e) => {
     const selectedId = e.target.value;
     const company = companyList.find((comp) => comp.company_id === parseInt(selectedId));
@@ -45,7 +44,7 @@ const EditCompanyDetails = () => {
     if (company) {
       setSelectedCompany(company);
 
-      // Autofill the form with the selected company's details
+
       setCompanyDetails({
         companyName: company.company_name,
         address: company.address,
@@ -67,7 +66,7 @@ const EditCompanyDetails = () => {
     }
   };
 
-  // Handle input change for each field
+
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setCompanyDetails((prevState) => ({
@@ -76,7 +75,6 @@ const EditCompanyDetails = () => {
     }));
   };
 
-  // Submit the updated company details via PUT request
   const handleSubmit = (e) => {
     e.preventDefault();
 

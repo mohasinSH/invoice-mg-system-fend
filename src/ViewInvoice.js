@@ -6,22 +6,22 @@ const ViewInvoice = () => {
   const [invoices, setInvoices] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Fetch invoices from the API
+ 
   useEffect(() => {
     axios.get('https://invoice-mg-system-bkend-890.onrender.com/invoice')
       .then(response => {
-        setInvoices(response.data); // Assuming response contains an array of invoice objects
+        setInvoices(response.data); 
       })
       .catch(error => {
         console.error('There was an error fetching the invoices!', error);
       });
   }, []);
 
-  // Delete an invoice
+
   const handleDelete = (srNo) => {
     axios.delete(`https://invoice-mg-system-bkend-890.onrender.com/invoice/${srNo}`)
       .then(() => {
-        // Update the state after successful deletion
+       
         setInvoices(invoices.filter(invoice => invoice.invoice_id !== srNo));
       })
       .catch(error => {
@@ -29,7 +29,7 @@ const ViewInvoice = () => {
       });
   };
 
-  // Filter invoices based on the search input
+
   const filteredInvoices = invoices.filter((invoice) =>
     invoice.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     invoice.customer_name.toLowerCase().includes(searchTerm.toLowerCase())

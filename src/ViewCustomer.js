@@ -8,7 +8,7 @@ const ViewCustomer = () => {
   const [customers, setCustomers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Fetch customers from the API
+ 
   useEffect(() => {
     axios.get('https://invoice-mg-system-bkend-890.onrender.com/customer')
       .then(response => {
@@ -19,17 +19,15 @@ const ViewCustomer = () => {
       });
   }, []);
 
-  // Filter customers based on the search input
   const filteredCustomers = customers.filter((customer) =>
     customer.customer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     customer.company_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Delete a customer
   const handleDelete = (customerId) => {
     axios.delete(`https://invoice-mg-system-bkend-890.onrender.com/customer/${customerId}`)
       .then(() => {
-        // Update the state after successful deletion
+        
         setCustomers(customers.filter(customer => customer.customer_id !== customerId));
       })
       .catch(error => {
