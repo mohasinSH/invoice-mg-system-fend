@@ -1,5 +1,4 @@
-import Navbar from "./Components/Navbar";
-import SideBar from "./Components/SideBar";
+
 import Dashboard from "./Dashboard";
 import { Routes ,Route} from "react-router-dom";
 import TrackBoard from "./TrackBoard";
@@ -9,6 +8,8 @@ import ViewCustomer from "./ViewCustomer";
 import CreateCustomer from "./CreateCustomer";
 import Login from "./Login";
 import CompanyDetails from "./CompanyDetails";
+import EditCompanyDetails from "./EditCompanyDetails";
+import CompanyName from "./CompanyName";
 function App() {
   return (
 <Routes>
@@ -21,7 +22,9 @@ function App() {
   <Route path="view-invoice" element={<ViewInvoice/>}/>
   <Route path="profile" element={<CompanyDetails/>}/>
   <Route path="customer" element={<ViewCustomer/>}/>
-  <Route path="vendor" element={<CreateCustomer/>}/>
+  <Route path="create-customer" element={<CreateCustomer/>}/>
+  <Route path="edit-company" element={<EditCompanyDetails/>}/>
+  <Route path="company-view" element={<CompanyName/>}/>
 </Route>
 </Routes>
   );

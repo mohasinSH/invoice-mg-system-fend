@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CompanyDetails = () => {
   const [companyName, setCompanyName] = useState('');
@@ -14,26 +17,60 @@ const CompanyDetails = () => {
   const [bankAccountNo, setBankAccountNo] = useState('');
   const [bankIfscCode, setBankIfscCode] = useState('');
   const [bankName, setBankName] = useState('');
+  const [panno, setPanno] = useState('');
+  const [logoBase64, setLogoBase64] = useState('');
+
+  const handleLogoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoBase64(reader.result); 
+      };
+      reader.readAsDataURL(file);  
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle the form submission logic (e.g., send data to an API)
-    console.log({
+
+    const companyData = {
       company_name: companyName,
-      address,
+      address: address,
       mobile_no: mobileNo,
       alternate_mobile_no: alternateMobileNo,
       landline_no: landlineNo,
-      email,
-      website,
+      email: email,
+      website: website,
       customer_prefix: customerPrefix,
       invoice_prefix: invoicePrefix,
       gstin_no: gstinNo,
+      panno: panno,
       bank_account_no: bankAccountNo,
       bank_ifsc_code: bankIfscCode,
       bank_name: bankName,
+      logo: logoBase64,  
+    };
+
+    axios.post('http://localhost:8000/company', companyData, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      toast.success('Company details submitted successfully!', {
+        position: 'top-right'
+      });
+      
+    })
+    .catch(error => {
+      toast.error('There was an error submitting the data!', {
+        position: 'top-right'
+      });
+      
     });
-    // Clear the form after submission
+
+    // Clear form after submission
     setCompanyName('');
     setAddress('');
     setMobileNo('');
@@ -44,9 +81,11 @@ const CompanyDetails = () => {
     setCustomerPrefix('');
     setInvoicePrefix('');
     setGstinNo('');
+    setPanno('');
     setBankAccountNo('');
     setBankIfscCode('');
     setBankName('');
+    setLogoBase64('');
   };
 
   return (
@@ -198,46 +237,70 @@ const CompanyDetails = () => {
             />
           </div>
 
-          {/* Bank Account No, IFSC Code, and Bank Name */}
-          <div className="mb-4 flex flex-wrap">
-            <div className="w-1/3 pr-2">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="bank_account_no">
-                Bank Account No
-              </label>
-              <input
-                type="text"
-                id="bank_account_no"
-                value={bankAccountNo}
-                onChange={(e) => setBankAccountNo(e.target.value)}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                required
-              />
-            </div>
-            <div className="w-1/3 px-2">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="bank_ifsc_code">
-                Bank IFSC Code
-              </label>
-              <input
-                type="text"
-                id="bank_ifsc_code"
-                value={bankIfscCode}
-                onChange={(e) => setBankIfscCode(e.target.value)}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              />
-            </div>
-            <div className="w-1/3 pl-2">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="bank_name">
-                Bank Name
-              </label>
-              <input
-                type="text"
-                id="bank_name"
-                value={bankName}
-                onChange={(e) => setBankName(e.target.value)}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                required
-              />
-            </div>
+          {/* Bank Details */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="bank_account_no">
+              Bank Account No
+            </label>
+            <input
+              type="text"
+              id="bank_account_no"
+              value={bankAccountNo}
+              onChange={(e) => setBankAccountNo(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="bank_ifsc_code">
+              Bank IFSC Code
+            </label>
+            <input
+              type="text"
+              id="bank_ifsc_code"
+              value={bankIfscCode}
+              onChange={(e) => setBankIfscCode(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="bank_name">
+              Bank Name
+            </label>
+            <input
+              type="text"
+              id="bank_name"
+              value={bankName}
+              onChange={(e) => setBankName(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+
+          {/* PAN No */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="panno">
+              PAN No
+            </label>
+            <input
+              type="text"
+              id="panno"
+              value={panno}
+              onChange={(e) => setPanno(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+
+          {/* Logo */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="logo">
+              Logo
+            </label>
+            <input
+              type="file"
+              id="logo"
+              onChange={handleLogoChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              accept="image/*"
+            />
           </div>
 
           <button
@@ -248,6 +311,7 @@ const CompanyDetails = () => {
           </button>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 };

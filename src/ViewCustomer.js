@@ -1,30 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { FaPlus, FaTrash } from 'react-icons/fa';
 
 const ViewCustomer = () => {
-  const [customers, setCustomers] = useState([
-    { customerId: 'C001', customerName: 'John Doe', companyName: 'TechCorp' },
-    { customerId: 'C002', customerName: 'Jane Smith', companyName: 'BizSolutions' },
-    { customerId: 'C003', customerName: 'Michael Johnson', companyName: 'Innovatech' },
-  ]);
-
+  const navigate = useNavigate();
+  const [customers, setCustomers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Fetch customers from the API
+  useEffect(() => {
+    axios.get('http://localhost:8000/customer')
+      .then(response => {
+        setCustomers(response.data); // Assuming response contains an array of customer objects
+      })
+      .catch(error => {
+        console.error('There was an error fetching the customers!', error);
+      });
+  }, []);
 
   // Filter customers based on the search input
   const filteredCustomers = customers.filter((customer) =>
-    customer.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    customer.companyName.toLowerCase().includes(searchTerm.toLowerCase())
+    customer.customer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    customer.company_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Delete a customer
   const handleDelete = (customerId) => {
-    const updatedCustomers = customers.filter(customer => customer.customerId !== customerId);
-    setCustomers(updatedCustomers);
+    axios.delete(`http://localhost:8000/customer/${customerId}`)
+      .then(() => {
+        // Update the state after successful deletion
+        setCustomers(customers.filter(customer => customer.customer_id !== customerId));
+      })
+      .catch(error => {
+        console.error('There was an error deleting the customer!', error);
+      });
   };
 
-  // Handle the "Add Customer" button click (for future logic)
   const handleAddCustomer = () => {
-    console.log('Redirect to Add Customer page');
-    // You can navigate to the customer creation form page here.
+    navigate('/home/create-customer');
   };
 
   return (
@@ -35,7 +49,7 @@ const ViewCustomer = () => {
       <div className="mb-4 flex justify-between items-center">
         <input
           type="text"
-          className="border p-2 rounded w-full"
+          className="border p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Search by customer name or company name"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -43,26 +57,27 @@ const ViewCustomer = () => {
       </div>
 
       {/* Customer Table */}
-      <table className="min-w-full bg-white border">
+      <table className="min-w-full bg-white shadow-md rounded-lg border border-gray-300">
         <thead>
-          <tr>
-            <th className="px-4 py-2 border">Customer ID</th>
-            <th className="px-4 py-2 border">Customer Name</th>
-            <th className="px-4 py-2 border">Company Name</th>
-            <th className="px-4 py-2 border">Actions</th>
+          <tr className="bg-gray-200 text-left">
+            <th className="px-4 py-2 border-b border-gray-300 text-lg font-semibold text-gray-700">Customer ID</th>
+            <th className="px-4 py-2 border-b border-gray-300 text-lg font-semibold text-gray-700">Customer Name</th>
+            <th className="px-4 py-2 border-b border-gray-300 text-lg font-semibold text-gray-700">Company Name</th>
+            <th className="px-4 py-2 border-b border-gray-300 text-lg font-semibold text-gray-700">Actions</th>
           </tr>
         </thead>
         <tbody>
           {filteredCustomers.map((customer) => (
-            <tr key={customer.customerId} className="border-t">
-              <td className="px-4 py-2 border">{customer.customerId}</td>
-              <td className="px-4 py-2 border">{customer.customerName}</td>
-              <td className="px-4 py-2 border">{customer.companyName}</td>
-              <td className="px-4 py-2 border">
+            <tr key={customer.customer_id} className="border-t hover:bg-gray-100">
+              <td className="px-4 py-2 border-b border-gray-300 text-gray-800 font-medium">{customer.customer_id}</td>
+              <td className="px-4 py-2 border-b border-gray-300 text-gray-800 font-medium">{customer.customer_name}</td>
+              <td className="px-4 py-2 border-b border-gray-300 text-gray-800 font-medium">{customer.company_name}</td>
+              <td className="px-4 py-2 border-b border-gray-300 text-center">
                 <button 
-                  onClick={() => handleDelete(customer.customerId)} 
-                  className="bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded"
+                  onClick={() => handleDelete(customer.customer_id)} 
+                  className="bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded flex items-center justify-center"
                 >
+                  <FaTrash className="mr-1" /> {/* Add delete icon */}
                   Delete
                 </button>
               </td>
@@ -75,8 +90,9 @@ const ViewCustomer = () => {
       <div className="mt-4 flex justify-center">
         <button 
           onClick={handleAddCustomer} 
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
         >
+          <FaPlus className="mr-1" /> {/* Add plus icon */}
           Add Customer
         </button>
       </div>

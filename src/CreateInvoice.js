@@ -1,16 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
+import 'react-toastify/dist/ReactToastify.css'; // Import toast styles
 
 const CreateInvoice = () => {
   const [companyName, setCompanyName] = useState('');
   const [customerName, setCustomerName] = useState('');
-  const [gstinNo] = useState('GSTIN123456'); // Dummy GSTIN value
-  const [items, setItems] = useState([
-    { description: '', units: 0, price: 0, total: 0 },
-  ]);
+  const [gstinNo, setGstinNo] = useState('');
+  const [items, setItems] = useState([{ description: '', units: 0, price: 0, total: 0 }]);
+  const [companies, setCompanies] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  
+  // Fetch companies and customers on component mount
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/company');
+        setCompanies(response.data);
+      } catch (error) {
+        console.error('Error fetching companies:', error);
+      }
+    };
 
-  // Dummy options for dropdowns
-  const companies = ['Company A', 'Company B', 'Company C'];
-  const customers = ['Customer X', 'Customer Y', 'Customer Z'];
+    const fetchCustomers = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/customer');
+        setCustomers(response.data);
+      } catch (error) {
+        console.error('Error fetching customers:', error);
+      }
+    };
+    fetchCompanies();
+    fetchCustomers();
+  }, []);
 
   const handleItemChange = (index, e) => {
     const { name, value } = e.target;
@@ -35,16 +57,61 @@ const CreateInvoice = () => {
     return items.reduce((acc, item) => acc + item.total, 0);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle the invoice submission logic (e.g., send data to an API)
-    console.log({
+    const finalTotal = calculateFinalTotal();
+
+    const invoiceData = {
       company_name: companyName,
       customer_name: customerName,
-      gstin_no: gstinNo,
-      items,
-    });
+      bill_amount: finalTotal,
+    };
+
+    try {
+      await axios.post('http://localhost:8000/invoice', invoiceData);
+
+      const company = companies.find((company) => company.company_name === companyName);
+      if (company) {
+        const companyId = company.company_id;
+        await axios.put(`http://localhost:8000/company/set-total/${companyId}`, {
+          bill_amount: finalTotal,
+        });
+      }
+
+      // Show success toast
+      toast.success('Company details submitted successfully!', {
+        position: 'top-right'
+      });
+
+      // Reset form fields after submission
+      setCompanyName('');
+      setCustomerName('');
+      setGstinNo('');
+      setItems([{ description: '', units: 0, price: 0, total: 0 }]);
+    } catch (error) {
+      console.error('Error submitting invoice:', error);
+      // Show error toast
+      toast.error('Error creating invoice. Please try again.', {
+        position: 'top-right'
+      });
+    }
   };
+
+  const handleCompanyChange = (e) => {
+    const selectedCompanyName = e.target.value;
+    setCompanyName(selectedCompanyName);
+
+    // Set GSTIN based on selected company
+    const selectedCompany = companies.find(company => company.company_name === selectedCompanyName);
+    if (selectedCompany) {
+      setGstinNo(selectedCompany.gstin);
+    } else {
+      setGstinNo('');
+    }
+  };
+
+  // Filter customers based on selected company
+  const filteredCustomers = customers.filter(customer => customer.company_name === companyName);
 
   return (
     <div className="flex justify-center items-center bg-gray-100 flex-1">
@@ -59,14 +126,14 @@ const CreateInvoice = () => {
             <select
               id="company_name"
               value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
+              onChange={handleCompanyChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             >
               <option value="">Select Company</option>
               {companies.map((company) => (
-                <option key={company} value={company}>
-                  {company}
+                <option key={company.company_id} value={company.company_name}>
+                  {company.company_name}
                 </option>
               ))}
             </select>
@@ -85,11 +152,15 @@ const CreateInvoice = () => {
               required
             >
               <option value="">Select Customer</option>
-              {customers.map((customer) => (
-                <option key={customer} value={customer}>
-                  {customer}
-                </option>
-              ))}
+              {filteredCustomers.length > 0 ? (
+                filteredCustomers.map((customer) => (
+                  <option key={customer.customer_id} value={customer.customer_name}>
+                    {customer.customer_name}
+                  </option>
+                ))
+              ) : (
+                <option value="" disabled>No customers available</option>
+              )}
             </select>
           </div>
 
@@ -182,12 +253,15 @@ const CreateInvoice = () => {
 
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full mt-4"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
           >
-            Submit Invoice
+            Create Invoice
           </button>
         </form>
       </div>
+
+      {/* Toast container for notifications */}
+      <ToastContainer />
     </div>
   );
 };

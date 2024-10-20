@@ -1,32 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { MagnifyingGlassIcon, TrashIcon } from '@heroicons/react/24/solid'; // Importing icons
 
 const ViewInvoice = () => {
-  const [invoices, setInvoices] = useState([
-    { srNo: 1, customerName: 'John Doe', companyName: 'TechCorp', billAmount: 1000, date: '2024-10-01' },
-    { srNo: 2, customerName: 'Jane Smith', companyName: 'BizSolutions', billAmount: 1500, date: '2024-09-15' },
-    { srNo: 3, customerName: 'Michael Johnson', companyName: 'Innovatech', billAmount: 2000, date: '2024-09-10' },
-  ]);
-
+  const [invoices, setInvoices] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Fetch invoices from the API
+  useEffect(() => {
+    axios.get('http://localhost:8000/invoice')
+      .then(response => {
+        setInvoices(response.data); // Assuming response contains an array of invoice objects
+      })
+      .catch(error => {
+        console.error('There was an error fetching the invoices!', error);
+      });
+  }, []);
+
+  // Delete an invoice
   const handleDelete = (srNo) => {
-    setInvoices(invoices.filter((invoice) => invoice.srNo !== srNo));
+    axios.delete(`http://localhost:8000/invoice/${srNo}`)
+      .then(() => {
+        // Update the state after successful deletion
+        setInvoices(invoices.filter(invoice => invoice.invoice_id !== srNo));
+      })
+      .catch(error => {
+        console.error('There was an error deleting the invoice!', error);
+      });
   };
 
+  // Filter invoices based on the search input
   const filteredInvoices = invoices.filter((invoice) =>
-    invoice.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    invoice.companyName.toLowerCase().includes(searchTerm.toLowerCase())
+    invoice.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    invoice.customer_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">View Invoices</h2>
+      <h2 className="text-3xl font-bold mb-4 text-gray-800">View Invoices</h2>
 
       {/* Search input */}
-      <div className="mb-4">
+      <div className="mb-4 flex items-center">
+        <MagnifyingGlassIcon className="h-5 w-5 text-gray-400 mr-2" />
         <input
           type="text"
-          className="border p-2 w-full rounded"
+          className="border p-2 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Search by customer name or company name"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -34,35 +52,44 @@ const ViewInvoice = () => {
       </div>
 
       {/* Invoice Table */}
-      <table className="min-w-full bg-white">
+      <table className="min-w-full bg-white max-w-xl mx-auto border border-gray-300">
         <thead>
-          <tr>
-            <th className="px-4 py-2">Sr. No.</th>
-            <th className="px-4 py-2">Customer Name</th>
-            <th className="px-4 py-2">Company Name</th>
-            <th className="px-4 py-2">Bill Amount</th>
-            <th className="px-4 py-2">Date</th>
-            <th className="px-4 py-2">Actions</th>
+          <tr className="bg-gray-200">
+            <th className="px-4 py-2 border-b border-gray-300 text-left text-lg font-semibold text-gray-700">Sr. No.</th>
+            <th className="px-4 py-2 border-b border-gray-300 text-left text-lg font-semibold text-gray-700">Customer Name</th>
+            <th className="px-4 py-2 border-b border-gray-300 text-left text-lg font-semibold text-gray-700">Company Name</th>
+            <th className="px-4 py-2 border-b border-gray-300 text-left text-lg font-semibold text-gray-700">Bill Amount</th>
+            <th className="px-4 py-2 border-b border-gray-300 text-left text-lg font-semibold text-gray-700">Date</th>
+            <th className="px-4 py-2 border-b border-gray-300 text-left text-lg font-semibold text-gray-700">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {filteredInvoices.map((invoice) => (
-            <tr key={invoice.srNo} className="border-t">
-              <td className="px-4 py-2">{invoice.srNo}</td>
-              <td className="px-4 py-2">{invoice.customerName}</td>
-              <td className="px-4 py-2">{invoice.companyName}</td>
-              <td className="px-4 py-2">{invoice.billAmount}</td>
-              <td className="px-4 py-2">{invoice.date}</td>
-              <td className="px-4 py-2">
-                <button
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-                  onClick={() => handleDelete(invoice.srNo)}
-                >
-                  Delete 
-                </button>
+          {filteredInvoices.length > 0 ? (
+            filteredInvoices.map((invoice) => (
+              <tr key={invoice.invoice_id} className="border-t hover:bg-gray-100">
+                <td className="px-4 py-2 text-center border-b border-gray-300 text-gray-800 font-medium">{invoice.invoice_id}</td>
+                <td className="px-4 py-2 text-left border-b border-gray-300 text-gray-800 font-medium">{invoice.customer_name}</td>
+                <td className="px-4 py-2 text-left border-b border-gray-300 text-gray-800 font-medium">{invoice.company_name}</td>
+                <td className="px-4 py-2 text-center border-b border-gray-300 text-gray-800 font-medium">{invoice.bill_amount}</td>
+                <td className="px-4 py-2 text-center border-b border-gray-300 text-gray-800 font-medium">{invoice.date}</td>
+                <td className="px-4 py-2 text-center border-b border-gray-300">
+                  <button
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded flex items-center justify-center"
+                    onClick={() => handleDelete(invoice.invoice_id)}
+                  >
+                    <TrashIcon className="h-5 w-5 mr-1" />
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="6" className="px-4 py-2 text-center border-b border-gray-300 text-gray-500 font-medium">
+                No invoices found
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>

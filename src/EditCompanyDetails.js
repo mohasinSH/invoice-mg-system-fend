@@ -1,100 +1,149 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import Toast styles
 
 const EditCompanyDetails = () => {
-  // List of companies for the dropdown
-  const companyList = [
-    { id: 1, name: 'Tech Solutions' },
-    { id: 2, name: 'Global Industries' },
-    { id: 3, name: 'Startup Innovations' },
-    { id: 4, name: 'Enterprise Systems' },
-  ];
+  const [companyList, setCompanyList] = useState([]); // List of companies fetched from API
+  const [selectedCompany, setSelectedCompany] = useState(null); // The selected company object
+  const [companyDetails, setCompanyDetails] = useState({
+    companyName: '',
+    address: '',
+    mobileNo: '',
+    alternateMobileNo: '',
+    landlineNo: '',
+    email: '',
+    website: '',
+    logo: '',
+    customerPrefix: '',
+    invoicePrefix: '',
+    gstinNo: '',
+    panNo: '',
+    bankAccountNo: '',
+    bankIfscCode: '',
+    bankName: '',
+    bankTotal:''
+  });
 
-  // State variables
-  const [companyName, setCompanyName] = useState('');
-  const [address, setAddress] = useState('');
-  const [mobileNo, setMobileNo] = useState('');
-  const [alternateMobileNo, setAlternateMobileNo] = useState('');
-  const [landlineNo, setLandlineNo] = useState('');
-  const [email, setEmail] = useState('');
-  const [website, setWebsite] = useState('');
-  const [customerPrefix, setCustomerPrefix] = useState('');
-  const [invoicePrefix, setInvoicePrefix] = useState('');
-  const [gstinNo, setGstinNo] = useState('');
-  const [bankAccountNo, setBankAccountNo] = useState('');
-  const [bankIfscCode, setBankIfscCode] = useState('');
-  const [bankName, setBankName] = useState('');
+  // Fetch all companies from the API
+  useEffect(() => {
+    axios.get('http://localhost:8000/company')
+      .then((response) => {
+        setCompanyList(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching companies:', error);
+        toast.error("Error fetching company data!");
+      });
+  }, []);
 
+  // Handle the company selection from dropdown
+  const handleCompanySelect = (e) => {
+    const selectedId = e.target.value;
+    const company = companyList.find((comp) => comp.company_id === parseInt(selectedId));
+
+    if (company) {
+      setSelectedCompany(company);
+
+      // Autofill the form with the selected company's details
+      setCompanyDetails({
+        companyName: company.company_name,
+        address: company.address,
+        mobileNo: company.mobile_no,
+        alternateMobileNo: company.alternate_mobile_no,
+        landlineNo: company.landline_no,
+        email: company.email,
+        website: company.website,
+        logo: company.logo,
+        customerPrefix: company.customer_prefix,
+        invoicePrefix: company.invoice_prefix,
+        gstinNo: company.gstin,
+        panNo: company.panno,
+        bankAccountNo: company.bank_account_no,
+        bankIfscCode: company.bank_ifsc_code,
+        bankName: company.bank_name,
+        bankTotal: company.company_total
+      });
+    }
+  };
+
+  // Handle input change for each field
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setCompanyDetails((prevState) => ({
+      ...prevState,
+      [id]: value,
+    }));
+  };
+
+  // Submit the updated company details via PUT request
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic
-    console.log({
-      company_name: companyName,
-      address,
-      mobile_no: mobileNo,
-      alternate_mobile_no: alternateMobileNo,
-      landline_no: landlineNo,
-      email,
-      website,
-      customer_prefix: customerPrefix,
-      invoice_prefix: invoicePrefix,
-      gstin_no: gstinNo,
-      bank_account_no: bankAccountNo,
-      bank_ifsc_code: bankIfscCode,
-      bank_name: bankName,
-    });
 
-    // Clear form after submission
-    setCompanyName('');
-    setAddress('');
-    setMobileNo('');
-    setAlternateMobileNo('');
-    setLandlineNo('');
-    setEmail('');
-    setWebsite('');
-    setCustomerPrefix('');
-    setInvoicePrefix('');
-    setGstinNo('');
-    setBankAccountNo('');
-    setBankIfscCode('');
-    setBankName('');
+    if (selectedCompany) {
+      axios.put(`http://localhost:8000/company/${selectedCompany.company_id}`, {
+        company_name: companyDetails.companyName,
+        address: companyDetails.address,
+        mobile_no: companyDetails.mobileNo,
+        alternate_mobile_no: companyDetails.alternateMobileNo,
+        landline_no: companyDetails.landlineNo,
+        email: companyDetails.email,
+        website: companyDetails.website,
+        logo: companyDetails.logo,
+        customer_prefix: companyDetails.customerPrefix,
+        invoice_prefix: companyDetails.invoicePrefix,
+        gstin: companyDetails.gstinNo,
+        panno: companyDetails.panNo,
+        bank_name: companyDetails.bankName,
+        bank_account_no: companyDetails.bankAccountNo,
+        bank_ifsc_code: companyDetails.bankIfscCode,
+        company_total: companyDetails.bankTotal
+      })
+      .then((response) => {
+        toast.success("Company details updated successfully!");
+        console.log('Company details updated:', response.data);
+      })
+      .catch((error) => {
+        toast.error("Error updating company details!");
+        console.error('Error updating company details:', error);
+      });
+    }
   };
 
   return (
     <div className="flex justify-center items-center bg-gray-100 flex-1">
       <div className="bg-white p-8 rounded shadow-md w-1/2">
-        <h2 className="text-2xl font-bold mb-6 text-center">Company Details</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">Edit Company Details</h2>
         <form onSubmit={handleSubmit}>
-          {/* Company Name Dropdown */}
+          {/* Company Dropdown */}
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="company_name">
               Company Name
             </label>
             <select
               id="company_name"
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
+              value={selectedCompany ? selectedCompany.company_id : ''}
+              onChange={handleCompanySelect}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             >
               <option value="" disabled>Select a company</option>
               {companyList.map((company) => (
-                <option key={company.id} value={company.name}>
-                  {company.name}
+                <option key={company.company_id} value={company.company_id}>
+                  {company.company_name}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Address Input */}
+          {/* Address */}
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="address">
-              Address
-            </label>
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="address">Address</label>
             <input
               type="text"
               id="address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
+              value={companyDetails.address}
+              onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
@@ -103,43 +152,170 @@ const EditCompanyDetails = () => {
           {/* Mobile No and Alternate Mobile No */}
           <div className="mb-4 flex flex-wrap">
             <div className="w-1/2 pr-2">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="mobile_no">
-                Mobile No
-              </label>
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="mobileNo">Mobile No</label>
               <input
                 type="text"
-                id="mobile_no"
-                value={mobileNo}
-                onChange={(e) => setMobileNo(e.target.value)}
+                id="mobileNo"
+                value={companyDetails.mobileNo}
+                onChange={handleInputChange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 required
               />
             </div>
             <div className="w-1/2 pl-2">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="alternate_mobile_no">
-                Alternate Mobile No
-              </label>
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="alternateMobileNo">Alternate Mobile No</label>
               <input
                 type="text"
-                id="alternate_mobile_no"
-                value={alternateMobileNo}
-                onChange={(e) => setAlternateMobileNo(e.target.value)}
+                id="alternateMobileNo"
+                value={companyDetails.alternateMobileNo}
+                onChange={handleInputChange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
             </div>
           </div>
 
-          {/* Other fields (Landline No, Email, Website, etc.) */}
-          {/* Keep the rest of the form fields as they were before */}
-          {/* ... */}
+          {/* Landline No */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="landlineNo">Landline No</label>
+            <input
+              type="text"
+              id="landlineNo"
+              value={companyDetails.landlineNo}
+              onChange={handleInputChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
 
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-          >
-            Submit
-          </button>
+          {/* Email, Website, and Logo */}
+          <div className="mb-4 flex flex-wrap">
+            <div className="w-1/3 pr-2">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                value={companyDetails.email}
+                onChange={handleInputChange}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                required
+              />
+            </div>
+            <div className="w-1/3 px-2">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="website">Website</label>
+              <input
+                type="url"
+                id="website"
+                value={companyDetails.website}
+                onChange={handleInputChange}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+            <div className="w-1/3 pl-2">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="logo">Logo URL</label>
+              <input
+                type="text"
+                id="logo"
+                value={companyDetails.logo}
+                onChange={handleInputChange}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+          </div>
+
+          {/* Customer Prefix and Invoice Prefix */}
+          <div className="mb-4 flex flex-wrap">
+            <div className="w-1/2 pr-2">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="customerPrefix">Customer Prefix</label>
+              <input
+                type="text"
+                id="customerPrefix"
+                value={companyDetails.customerPrefix}
+                onChange={handleInputChange}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+            <div className="w-1/2 pl-2">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="invoicePrefix">Invoice Prefix</label>
+              <input
+                type="text"
+                id="invoicePrefix"
+                value={companyDetails.invoicePrefix}
+                onChange={handleInputChange}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+          </div>
+
+          {/* GSTIN and PAN No */}
+          <div className="mb-4 flex flex-wrap">
+            <div className="w-1/2 pr-2">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="gstinNo">GSTIN</label>
+              <input
+                type="text"
+                id="gstinNo"
+                value={companyDetails.gstinNo}
+                onChange={handleInputChange}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+            <div className="w-1/2 pl-2">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="panNo">PAN No</label>
+              <input
+                type="text"
+                id="panNo"
+                value={companyDetails.panNo}
+                onChange={handleInputChange}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+          </div>
+
+          {/* Bank Account No and IFSC Code */}
+          <div className="mb-4 flex flex-wrap">
+            <div className="w-1/2 pr-2">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="bankAccountNo">Bank Account No</label>
+              <input
+                type="text"
+                id="bankAccountNo"
+                value={companyDetails.bankAccountNo}
+                onChange={handleInputChange}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+            <div className="w-1/2 pl-2">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="bankIfscCode">Bank IFSC Code</label>
+              <input
+                type="text"
+                id="bankIfscCode"
+                value={companyDetails.bankIfscCode}
+                onChange={handleInputChange}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+          </div>
+
+          {/* Bank Name */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="bankName">Bank Name</label>
+            <input
+              type="text"
+              id="bankName"
+              value={companyDetails.bankName}
+              onChange={handleInputChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex items-center justify-between">
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              Save Changes
+            </button>
+          </div>
         </form>
+        <ToastContainer />
       </div>
     </div>
   );
