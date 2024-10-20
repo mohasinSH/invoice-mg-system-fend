@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import Toast styles
+import 'react-toastify/dist/ReactToastify.css'; 
 
 const EditCompanyDetails = () => {
-  const [companyList, setCompanyList] = useState([]); // List of companies fetched from API
-  const [selectedCompany, setSelectedCompany] = useState(null); // The selected company object
+  const [companyList, setCompanyList] = useState([]); 
+  const [selectedCompany, setSelectedCompany] = useState(null); 
   const [companyDetails, setCompanyDetails] = useState({
     companyName: '',
     address: '',
