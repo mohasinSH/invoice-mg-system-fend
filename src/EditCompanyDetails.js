@@ -27,7 +27,7 @@ const EditCompanyDetails = () => {
 
   // Fetch all companies from the API
   useEffect(() => {
-    axios.get('http://localhost:8000/company')
+    axios.get('https://invoice-mg-system-bkend-890.onrender.com/company')
       .then((response) => {
         setCompanyList(response.data);
       })
@@ -81,7 +81,7 @@ const EditCompanyDetails = () => {
     e.preventDefault();
 
     if (selectedCompany) {
-      axios.put(`http://localhost:8000/company/${selectedCompany.company_id}`, {
+      axios.put(`https://invoice-mg-system-bkend-890.onrender.com/company/${selectedCompany.company_id}`, {
         company_name: companyDetails.companyName,
         address: companyDetails.address,
         mobile_no: companyDetails.mobileNo,

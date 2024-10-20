@@ -10,7 +10,7 @@ const ViewCustomer = () => {
 
   // Fetch customers from the API
   useEffect(() => {
-    axios.get('http://localhost:8000/customer')
+    axios.get('https://invoice-mg-system-bkend-890.onrender.com/customer')
       .then(response => {
         setCustomers(response.data); // Assuming response contains an array of customer objects
       })
@@ -27,7 +27,7 @@ const ViewCustomer = () => {
 
   // Delete a customer
   const handleDelete = (customerId) => {
-    axios.delete(`http://localhost:8000/customer/${customerId}`)
+    axios.delete(`https://invoice-mg-system-bkend-890.onrender.com/customer/${customerId}`)
       .then(() => {
         // Update the state after successful deletion
         setCustomers(customers.filter(customer => customer.customer_id !== customerId));

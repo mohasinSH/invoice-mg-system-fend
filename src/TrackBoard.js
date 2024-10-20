@@ -14,15 +14,15 @@ const TrackBoard = () => {
     const fetchCounts = async () => {
       try {
         // Fetch customer count
-        const customerResponse = await axios.get('http://localhost:8000/customer');
+        const customerResponse = await axios.get('https://invoice-mg-system-bkend-890.onrender.com/customer');
         setCustomerCount(customerResponse.data.length); // Assuming the data is an array
 
         // Fetch invoice count
-        const invoiceResponse = await axios.get('http://localhost:8000/invoice');
+        const invoiceResponse = await axios.get('https://invoice-mg-system-bkend-890.onrender.com/invoice');
         setInvoiceCount(invoiceResponse.data.length); // Assuming the data is an array
 
         // Fetch company count
-        const companyResponse = await axios.get('http://localhost:8000/company');
+        const companyResponse = await axios.get('https://invoice-mg-system-bkend-890.onrender.com/company');
         setCompanyCount(companyResponse.data.length); // Assuming the data is an array
 
       } catch (error) {

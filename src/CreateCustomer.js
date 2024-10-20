@@ -12,7 +12,7 @@ const CreateCustomer = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/company');
+        const response = await axios.get('https://invoice-mg-system-bkend-890.onrender.com/company');
         setCompanies(response.data);
       } catch (error) {
         console.error('Error fetching companies:', error);
@@ -31,7 +31,7 @@ const CreateCustomer = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:8000/customer', customerData);
+      const response = await axios.post('https://invoice-mg-system-bkend-890.onrender.com/customer', customerData);
       console.log('Customer created:', response.data);
 
       // Show success toast

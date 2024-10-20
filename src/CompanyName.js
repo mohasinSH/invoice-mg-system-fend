@@ -11,7 +11,7 @@ const CompanyName = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/company');
+        const response = await axios.get('https://invoice-mg-system-bkend-890.onrender.com/company');
         setCompanies(response.data); // Assuming response.data contains the company array
       } catch (error) {
         console.error('Error fetching companies:', error);
@@ -29,7 +29,7 @@ const CompanyName = () => {
   const handleDelete = async (id) => {
     try {
       // Send DELETE request to the server
-      const response = await axios.delete(`http://localhost:8000/company/${id}`);
+      const response = await axios.delete(`https://invoice-mg-system-bkend-890.onrender.com/company/${id}`);
       
       if (response.status === 200) {
         // Remove the deleted company from the state

@@ -52,7 +52,7 @@ const CompanyDetails = () => {
       logo: logoBase64,  
     };
 
-    axios.post('http://localhost:8000/company', companyData, {
+    axios.post('https://invoice-mg-system-bkend-890.onrender.com/company', companyData, {
       headers: {
         'Content-Type': 'application/json'
       }

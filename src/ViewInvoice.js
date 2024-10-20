@@ -8,7 +8,7 @@ const ViewInvoice = () => {
 
   // Fetch invoices from the API
   useEffect(() => {
-    axios.get('http://localhost:8000/invoice')
+    axios.get('https://invoice-mg-system-bkend-890.onrender.com/invoice')
       .then(response => {
         setInvoices(response.data); // Assuming response contains an array of invoice objects
       })
@@ -19,7 +19,7 @@ const ViewInvoice = () => {
 
   // Delete an invoice
   const handleDelete = (srNo) => {
-    axios.delete(`http://localhost:8000/invoice/${srNo}`)
+    axios.delete(`https://invoice-mg-system-bkend-890.onrender.com/invoice/${srNo}`)
       .then(() => {
         // Update the state after successful deletion
         setInvoices(invoices.filter(invoice => invoice.invoice_id !== srNo));

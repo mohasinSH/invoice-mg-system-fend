@@ -15,7 +15,7 @@ const CreateInvoice = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/company');
+        const response = await axios.get('https://invoice-mg-system-bkend-890.onrender.com/company');
         setCompanies(response.data);
       } catch (error) {
         console.error('Error fetching companies:', error);
@@ -24,7 +24,7 @@ const CreateInvoice = () => {
 
     const fetchCustomers = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/customer');
+        const response = await axios.get('https://invoice-mg-system-bkend-890.onrender.com/customer');
         setCustomers(response.data);
       } catch (error) {
         console.error('Error fetching customers:', error);
@@ -68,12 +68,12 @@ const CreateInvoice = () => {
     };
 
     try {
-      await axios.post('http://localhost:8000/invoice', invoiceData);
+      await axios.post('https://invoice-mg-system-bkend-890.onrender.com/invoice', invoiceData);
 
       const company = companies.find((company) => company.company_name === companyName);
       if (company) {
         const companyId = company.company_id;
-        await axios.put(`http://localhost:8000/company/set-total/${companyId}`, {
+        await axios.put(`https://invoice-mg-system-bkend-890.onrender.com/company/set-total/${companyId}`, {
           bill_amount: finalTotal,
         });
       }
