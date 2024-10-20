@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { MagnifyingGlassIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid'; // Import Heroicons
+import { MagnifyingGlassIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid'; 
 
 const CompanyName = () => {
-  // State for companies and search filter
+ 
   const [companies, setCompanies] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Fetch companies data from the API
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
         const response = await axios.get('https://invoice-mg-system-bkend-890.onrender.com/company');
-        setCompanies(response.data); // Assuming response.data contains the company array
+        setCompanies(response.data); 
       } catch (error) {
         console.error('Error fetching companies:', error);
       }
