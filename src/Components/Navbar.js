@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiLogOut, FiFileText } from 'react-icons/fi'; // Import icons for logout and system name
+import { FiLogOut, FiFileText } from 'react-icons/fi'; 
 import { useNavigate } from 'react-router-dom';
 const Navbar = () => {
  const navigate = useNavigate();
